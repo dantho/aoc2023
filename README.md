@@ -7,14 +7,14 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | Day | Stars | Comments (**SPOILER ALERT!**) |
 |---|:-:|-|
 | [1: Trebuchet?!](https://adventofcode.com/2023/day/1) |⭐⭐| Calculate Calibration values from fancy formatted input |
-| [2: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [3: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [4: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [5: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [6: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [7: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [8: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
-| [9: ](https://adventofcode.com/2023/day/2) || (Not Yet Available) |
+| [2: Cube Conundrum](https://adventofcode.com/2023/day/2) |⭐⭐| Colored cube game |
+| [3: ](https://adventofcode.com/2023/day/3) || (Not Yet Available) |
+| [4: ](https://adventofcode.com/2023/day/4) || (Not Yet Available) |
+| [5: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |
+| [6: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |
+| [7: ](https://adventofcode.com/2023/day/6) || (Not Yet Available) |
+| [8: ](https://adventofcode.com/2023/day/8) || (Not Yet Available) |
+| [9: ](https://adventofcode.com/2023/day/9) || (Not Yet Available) |
 | [10: ](https://adventofcode.com/2023/day/10) || (Not Yet Available) |
 | [11: ](https://adventofcode.com/2023/day/11) || (Not Yet Available) |
 | [12: ](https://adventofcode.com/2023/day/12) || (Not Yet Available) |

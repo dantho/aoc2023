@@ -6,9 +6,9 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 
 | Day | Stars | Comments (**SPOILER ALERT!**) |
 |---|:-:|-|
-| [1: Trebuchet?!](https://adventofcode.com/2023/day/1) |⭐⭐| Calculate Calibration values from fancy formatted input |
-| [2: Cube Conundrum](https://adventofcode.com/2023/day/2) |⭐⭐| Colored cube game |
-| [3: ](https://adventofcode.com/2023/day/3) || (Not Yet Available) |
+| [1: Trebuchet?!](https://adventofcode.com/2023/day/1) |⭐⭐| Calculate Calibration values from fancy formatted input. Confounder:  xxxtwonexxx becomes 21 |
+| [2: Cube Conundrum](https://adventofcode.com/2023/day/2) |⭐⭐| Colored cube game. Straightforward. Part 2 is easy. |
+| [3: Gear Ratios](https://adventofcode.com/2023/day/3) || summing part numbers in an engine "schematic" |
 | [4: ](https://adventofcode.com/2023/day/4) || (Not Yet Available) |
 | [5: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |
 | [6: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |

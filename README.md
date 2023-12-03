@@ -8,7 +8,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 |---|:-:|-|
 | [1: Trebuchet?!](https://adventofcode.com/2023/day/1) |⭐⭐| Calculate Calibration values from fancy formatted input. Confounder:  xxxtwonexxx becomes 21 |
 | [2: Cube Conundrum](https://adventofcode.com/2023/day/2) |⭐⭐| Colored cube game. Straightforward. Part 2 is easy. |
-| [3: Gear Ratios](https://adventofcode.com/2023/day/3) || summing part numbers in an engine "schematic" |
+| [3: Gear Ratios](https://adventofcode.com/2023/day/3) |⭐⭐| Summing part numbers and "gear ratios" in an engine "schematic".  Good candidate for LINQ. |
 | [4: ](https://adventofcode.com/2023/day/4) || (Not Yet Available) |
 | [5: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |
 | [6: ](https://adventofcode.com/2023/day/5) || (Not Yet Available) |

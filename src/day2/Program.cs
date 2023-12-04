@@ -99,7 +99,7 @@ public class Game
         while (match.Success)
         {
             Grab grab = new();
-            // Groups 1, 3, 5 contain possible stone counts, 2, 4, 6 contain colors
+            // Groups 1, 3, 5 contain (possibly empty) stone counts, 2, 4, 6 contain colors
             for (int g = 1; g <= 5; g+=2)
             {
                 if (match.Groups[g].Length > 0)

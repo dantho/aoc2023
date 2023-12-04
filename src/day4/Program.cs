@@ -37,10 +37,10 @@ string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inp
 //else
 //    Debug.Assert(false, "aocPart should be 1 or 2");
 
-
 foreach (var line in lines)
 {
     Console.WriteLine(line);
+    new LineParser(line);
 }
 
 uint ansPart1 = 0;
@@ -52,3 +52,22 @@ Console.WriteLine($"The answer for Part {2} is {ansPart2}");
 // End
 // End
 // End
+
+public class LineParser
+{
+    static string parseScratchCardPattern = @"^Card +(\d+):( +(\d+)){10} |( +(\d+)){25}";
+    static Regex parseScratchCardRE = new(parseScratchCardPattern);
+
+    public LineParser(string txtDefinition)
+    {
+        var scratchCardData = parseScratchCardRE.Match(txtDefinition);
+        var numString = parseScratchCardRE.Match(txtDefinition).Groups[1].Value;
+        while (scratchCardData.Success)
+        {
+            if (!int.TryParse(numString, out int num))
+                throw new Exception($"Parse Error: NaN ({numString})");
+            Console.WriteLine(num);
+            scratchCardData = scratchCardData.NextMatch();
+        }
+    }
+};

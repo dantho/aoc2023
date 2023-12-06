@@ -11,8 +11,8 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [3: Gear Ratios](https://adventofcode.com/2023/day/3) |⭐⭐| Summing part numbers and "gear ratios" in an engine "schematic".  Good candidate for LINQ. |
 | [4: Scratchcards](https://adventofcode.com/2023/day/4) |⭐⭐| Decode scratch card winnings.  Very practical! Used REGEX. |
 | [5: If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5) |⭐⭐| Relate seed to soil to fertilizer etc. Part2 was hard, even after knowing how to proceed. Used REGEX. |
-| [6: Wait For It](https://adventofcode.com/2023/day/5) || (Not Yet Available) |
-| [7: ](https://adventofcode.com/2023/day/6) || (Not Yet Available) |
+| [6: Wait For It](https://adventofcode.com/2023/day/6) || (Not Yet Available) |
+| [7: ](https://adventofcode.com/2023/day/7) || (Not Yet Available) |
 | [8: ](https://adventofcode.com/2023/day/8) || (Not Yet Available) |
 | [9: ](https://adventofcode.com/2023/day/9) || (Not Yet Available) |
 | [10: ](https://adventofcode.com/2023/day/10) || (Not Yet Available) |

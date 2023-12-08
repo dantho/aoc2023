@@ -1,4 +1,6 @@
 ﻿// https://adventofcode.com/2023/day/7
+#define PART2
+
 using System.Diagnostics;
 using System;
 using System.Text.RegularExpressions;
@@ -7,6 +9,7 @@ using System.ComponentModel.Design;
 using System.Xml.Schema;
 using System.Threading;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 // Every hand is exactly one type. From strongest to weakest, they are:
 //    Five of a kind, where all five cards have the same label: AAAAA
@@ -20,20 +23,29 @@ using System.Collections.Generic;
 // If two hands have the same type, a second ordering rule takes effect. The hand with the stronger first card is considered stronger.
 //    "3QQQQ" beats "2AAAA"
 
-int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day7.txt");
 
-if (aocPart == 1)
-    // Part 1 example input
-    lines = new string[] 
-    {
-        "32T3K 765",
-        "T55J5 684",
-        "KK677 28",
-        "KTJJT 220",
-        "QQQJA 483",
-    };
-//else if (aocPart == 2)
+//lines = new string[]
+//{
+//    "23456 765",
+//    "22456 684",
+//    "22446 28",
+//    "22256 220",
+//    "22255 220",
+//    "22226 483",
+//    "22222 483",
+//};
+
+//    // Part 1 example input
+//lines = new string[]
+//{
+//        "32T3K 765",
+//        "T55J5 684",
+//        "KK677 28",
+//        "KTJJT 220",
+//        "QQQJA 483",
+//};
+
 //    // Part 2 example input
 //    lines = new string[] {
 //        "two1nine",
@@ -44,22 +56,23 @@ if (aocPart == 1)
 //        "zoneight234",
 //        "7pqrstsixteen"
 //        };
-//else
-//    Debug.Assert(false, "aocPart should be 1 or 2");
 
-
+List<Hand> hands = new();
 foreach (var line in lines)
 {
-    List<Hand> hands = new();
-    var fields = line.Split(" ", StringSplitOptions.TrimEntries);
-    if (fields == null) throw new Exception("Parsing error");
+    var fields = line.Split(" ", StringSplitOptions.TrimEntries) ?? throw new Exception("Parsing error");
     hands.Add(new Hand(fields[0], fields[1]));
-    Console.WriteLine(line);
-    Console.WriteLine($"{hands.Last().Cards} {hands.Last().Bet}");
+    //Console.WriteLine(line);
+    Console.WriteLine($"{hands.Last().Cards} {hands.Last().Bid} has value {hands.Last().Score}");
 }
-
-uint ansPart1 = 0;
-uint ansPart2 = 0;
+hands.Sort();
+int totalWinnings = 0;
+for (int ndx = 0; ndx < hands.Count; ndx++)
+{
+    totalWinnings += (ndx + 1) * hands[ndx].Bid;
+}
+int ansPart1 = totalWinnings;
+int ansPart2 = 0;
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");
@@ -68,35 +81,51 @@ Console.WriteLine($"The answer for Part {2} is {ansPart2}");
 // End
 // End
 
-class Hand
+class Hand : IComparable<Hand>
 {
     public string Cards;
-    public int Bet;
-    int handScore;
+    public int Bid;
+    public int Score;
 
     public Hand(string rawHand, string rawBet) : this(rawHand, int.Parse(rawBet)) { }
     public Hand(string rawHand, int bet)
     {
         Debug.Assert(rawHand.Length == 5);
         Cards = rawHand;
-        Bet = bet;
-        handScore = CalcScore(Cards);
+        Bid = bet;
+        Score = HandValue();
     }
 
+    public int CompareTo(Hand? other)
+    {
+        if (other == null) return -1;
+
+        int val = Score.CompareTo(other.Score);
+        if (val == 0)
+        {
+            for (int ndx = 0; ndx < Cards.Length; ndx++)
+            {
+                val = Hand.CardValue(Cards[ndx]).CompareTo(Hand.CardValue(other.Cards[ndx]));
+                if (val != 0) break;
+            }
+        }
+        return val;
+    }
     enum HandScore
     {
-        FiveOfaKind = 5,
-        FourOfaKind = 4,
+        FiveOfaKind = 6,
+        FourOfaKind = 5,
+        FullHouse = 4,
         ThreeOfaKind = 3,
         TwoPair = 2,
         OnePair = 1,
         HighCard = 0,
     }
 
-    private int CalcScore(string cards)
+    private int HandValue()
     {
         Dictionary<char,int> card_counter = new();
-        foreach (char c in cards)
+        foreach (char c in Cards)
         {
             if (card_counter.TryGetValue(c, out int count))
                 card_counter[c]++;
@@ -104,26 +133,43 @@ class Hand
                 card_counter.Add(c, 1);
         }
         int same = card_counter.Values.Max();
-        if (same >= 3) return same;
-        if (same == 2)
-            return (card_counter.Where((c, v) => v == 2).Count() > 1) ? 2 : 1;
+        if (same == 5) return same + 1;
+#if PART2
+        // "Jacks are wild" processing
+        // Remove jacks and boost max count by count of jacks removed
+        if (card_counter.ContainsKey('J'))
+        {
+            int jokers = card_counter['J'];
+            card_counter.Remove('J');
+            same = card_counter.Values.Max() + jokers;
+        }
+#endif
+        if (same >= 4) return same + 1;
+        if (same == 3) return card_counter.Count == 2 ? 4 : 3;
+        if (same == 2) return card_counter.Count == 3 ? 2 : 1;
         return 0;
     }
 
-    private int CardValue(char card)
+    private static int CardValue(char card)
     {
-        if (char.IsDigit(card))
+        if (char.IsDigit(card) && card - '0' >= 2)
             return card - '0';
-        else
-            switch (card)
-            {
-                case 'J': return 11;
-                case 'Q': return 12;
-                case 'K': return 13;
-                case 'A': return 14;
-                default:
-                    throw new Exception("Illegal card ('{card}')");
-            }
+        switch (card)
+        {
+            case 'T': return 10;
+            case 'J':
+                {
+#if PART2
+                    return 0;
+#else
+                    return 11;
+#endif
+                }
+            case 'Q': return 12;
+            case 'K': return 13;
+            case 'A': return 14;
+        }
+        throw new Exception("Illegal card ('{card}')");
     }
     private bool IsCard(char candidate)
     {

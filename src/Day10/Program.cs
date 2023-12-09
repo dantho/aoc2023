@@ -1,4 +1,4 @@
-﻿// https://adventofcode.com/2023/day/N
+﻿// https://adventofcode.com/2023/day/10
 using System.Diagnostics;
 using System;
 using System.Text.RegularExpressions;
@@ -7,7 +7,7 @@ using System.ComponentModel.Design;
 using System.Xml.Schema;
 
 int aocPart = 1;
-string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\dayN.txt");
+string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day10.txt");
 
 // // Example 1 input
 // lines = new string[] {

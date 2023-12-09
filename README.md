@@ -13,7 +13,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [5: If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5) |⭐⭐| Relate seed to soil to fertilizer etc. Part2 was hard, even after knowing how to proceed. Used REGEX. |
 | [6: Wait For It](https://adventofcode.com/2023/day/6) |⭐⭐| Boat Racing.  Very easy if you use simple algebra. |
 | [7: Camel Cards](https://adventofcode.com/2023/day/7) |⭐⭐| Poker on a Camel, Jacks are wild! |
-| [8: Haunted Wasteland](https://adventofcode.com/2023/day/8) || (Not Yet Available) |
+| [8: Haunted Wasteland](https://adventofcode.com/2023/day/8) |⭐⭐| Simple binary tree. Modulo-math in Part 2. |
 | [9: Mirage Maintenance](https://adventofcode.com/2023/day/9) || (Not Yet Available) |
 | [10: ](https://adventofcode.com/2023/day/10) || (Not Yet Available) |
 | [11: ](https://adventofcode.com/2023/day/11) || (Not Yet Available) |

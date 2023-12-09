@@ -43,8 +43,8 @@ foreach (var line in lines)
     Console.WriteLine(line);
 }
 
-uint ansPart1 = 0;
-uint ansPart2 = 0;
+int ansPart1 = 0;
+int ansPart2 = 0;
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");

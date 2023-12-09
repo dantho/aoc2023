@@ -1,13 +1,5 @@
 ﻿// https://adventofcode.com/2023/day/8
 using System.Diagnostics;
-using System;
-using System.Text.RegularExpressions;
-using System.Drawing;
-using System.ComponentModel.Design;
-using System.Xml.Schema;
-using System.Reflection;
-using System.Linq;
-using System.Runtime;
 
 int aocPart = 2;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day8.txt");

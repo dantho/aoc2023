@@ -15,7 +15,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [7: Camel Cards](https://adventofcode.com/2023/day/7) |⭐⭐| Poker on a Camel, Jacks are wild! |
 | [8: Haunted Wasteland](https://adventofcode.com/2023/day/8) |⭐⭐| Simple binary tree. Modulo-math in Part 2. |
 | [9: Mirage Maintenance](https://adventofcode.com/2023/day/9) |⭐⭐| Simple sequence processing |
-| [10: ](https://adventofcode.com/2023/day/10) || (Not Yet Available) |
+| [10: Pipe Maze](https://adventofcode.com/2023/day/10) || (Not Yet Available) |
 | [11: ](https://adventofcode.com/2023/day/11) || (Not Yet Available) |
 | [12: ](https://adventofcode.com/2023/day/12) || (Not Yet Available) |
 | [13: ](https://adventofcode.com/2023/day/13) || (Not Yet Available) |

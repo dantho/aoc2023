@@ -16,7 +16,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [8: Haunted Wasteland](https://adventofcode.com/2023/day/8) |⭐⭐| Simple binary tree. Modulo-math in Part 2. |
 | [9: Mirage Maintenance](https://adventofcode.com/2023/day/9) |⭐⭐| Simple sequence processing |
 | [10: Pipe Maze](https://adventofcode.com/2023/day/10) |⭐⭐| Pipes! ┏ ┓┗ ┛┃━ Not easy.| 
-| [11: ](https://adventofcode.com/2023/day/11) || (Not Yet Available) |
+| [11: Cosmic Expansion](https://adventofcode.com/2023/day/11) || Manhattan Distances with weirdly expanding grid |
 | [12: ](https://adventofcode.com/2023/day/12) || (Not Yet Available) |
 | [13: ](https://adventofcode.com/2023/day/13) || (Not Yet Available) |
 | [14: ](https://adventofcode.com/2023/day/14) || (Not Yet Available) |

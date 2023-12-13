@@ -17,8 +17,8 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [9: Mirage Maintenance](https://adventofcode.com/2023/day/9) |⭐⭐| Simple sequence processing |
 | [10: Pipe Maze](https://adventofcode.com/2023/day/10) |⭐⭐| Pipes! ┏ ┓┗ ┛┃━ Not easy.| 
 | [11: Cosmic Expansion](https://adventofcode.com/2023/day/11) || Manhattan Distances with weirdly expanding grid |
-| [12: ](https://adventofcode.com/2023/day/12) || (Not Yet Available) |
-| [13: ](https://adventofcode.com/2023/day/13) || (Not Yet Available) |
+| [12: Hot Springs](https://adventofcode.com/2023/day/12) |⭐| Contiguous bit pattern validation. Challenging! |
+| [13: Point of Incidence](https://adventofcode.com/2023/day/13) || (Not Yet Available) |
 | [14: ](https://adventofcode.com/2023/day/14) || (Not Yet Available) |
 | [15: ](https://adventofcode.com/2023/day/15) || (Not Yet Available) |
 | [16: ](https://adventofcode.com/2023/day/16) || (Not Yet Available) |

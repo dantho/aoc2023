@@ -12,26 +12,26 @@ using System.Text;
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day13.txt");
 
-// Example 1 input
-lines = new string[]
-{
-    "#.##..##.",
-    "..#.##.#.",
-    "##......#",
-    "##......#",
-    "..#.##.#.",
-    "..##..##.",
-    "#.#.##.#.",
-    "",
-    "#...##..#",
-    "#....#..#",
-    "..##..###",
-    "#####.##.",
-    "#####.##.",
-    "..##..###",
-    "#....#..#",
-    "",
-};
+//// Example 1 input
+//lines = new string[]
+//{
+//    "#.##..##.",
+//    "..#.##.#.",
+//    "##......#",
+//    "##......#",
+//    "..#.##.#.",
+//    "..##..##.",
+//    "#.#.##.#.",
+//    "",
+//    "#...##..#",
+//    "#....#..#",
+//    "..##..###",
+//    "#####.##.",
+//    "#####.##.",
+//    "..##..###",
+//    "#....#..#",
+//    "",
+//};
 
 List<List<string>> patterns = new();
 { 
@@ -66,17 +66,24 @@ foreach (List<string> pattern in patterns)
             patternAsArray = patternAsArray.Reverse().ToArray();
             int? rowInvertedFoldRow = findFold(patternAsArray);
             if (rowInvertedFoldRow is not null)
+                // Ndx starts at zero on BOTH sides of this !calculation!  Thus, the -2.
                 foldRow = patternAsArray.Length - rowInvertedFoldRow - 2;
         }
         if (foldRow is not null)
         {
-            foldscore.Add(rowSearch ? 100 : 1 * ((int)foldRow + 1));
-            continue;
+            int rowBonus = i == 0 ? 100 : 1;
+            foldscore.Add(rowBonus * ((int)foldRow + 1));
+            break;
+        }
+        else if (!rowSearch)
+        {
+            throw new Exception("Didn't find a fold!");
         }
         // Else search for column...
         rowSearch = false;
     }
 }
+Debug.Assert(foldscore.Count == patterns.Count);
 
 foreach (var line in lines)
 {
@@ -112,10 +119,11 @@ string[] transpose(string[] input)
 }
 int? findFold(string[] pattern)
 {
-    for (int row = 1; row < pattern.Length; row += 2)
+    int lastOddNdx = pattern.Length - 1 - (pattern.Length % 2);
+    for (int row = lastOddNdx; row > 0 ; row -= 2)
     {
         bool foundFold = true; // optimistic default
-        // Test for reflective match to row
+        // Test for reflective match to from 0 to row
         for (int bottom = 0; bottom <= row / 2; bottom++)
         {
             if (pattern[bottom] != pattern[row - bottom])

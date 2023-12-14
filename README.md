@@ -19,7 +19,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [11: Cosmic Expansion](https://adventofcode.com/2023/day/11) |⭐⭐| Manhattan Distances with weirdly expanding grid. |
 | [12: Hot Springs](https://adventofcode.com/2023/day/12) |⭐| Contiguous bit pattern validation. Part 1 challenging! Part 2 brutal! |
 | [13: Point of Incidence](https://adventofcode.com/2023/day/13) |⭐⭐| Folding patterns and data transposing. |
-| [14: ](https://adventofcode.com/2023/day/14) || (Not Yet Available) |
+| [14: Parabolic Reflector Dish](https://adventofcode.com/2023/day/14) || (Not Yet Available) |
 | [15: ](https://adventofcode.com/2023/day/15) || (Not Yet Available) |
 | [16: ](https://adventofcode.com/2023/day/16) || (Not Yet Available) |
 | [17: ](https://adventofcode.com/2023/day/17) || (Not Yet Available) |

@@ -10,21 +10,16 @@ using System.Runtime.CompilerServices;
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day12.txt");
 
-// // Example 1 input
-// lines = new string[]
-// {
-//    "???.### 1,1,3",
-//    ".??..??...?##. 1,1,3",
-//    "?#?#?#?#?#?#?#? 1,3,1,6",
-//    "????.#...#... 4,1,1",
-//    "????.######..#####. 1,6,5",
-//    "?###???????? 3,2,1"
-//};
-
-// // Example 2 input
-// lines = new string[] {
-//     "bla bla ...",
-//     };
+// Example input
+lines = new string[]
+{
+    "???.### 1,1,3",
+    ".??..??...?##. 1,1,3",
+    "?#?#?#?#?#?#?#? 1,3,1,6",
+    "????.#...#... 4,1,1",
+    "????.######..#####. 1,6,5",
+    "?###???????? 3,2,1"
+};
 
 // Extract into 2 strings
 string[][] rawStatus = lines.Select(line =>
@@ -34,22 +29,40 @@ string[][] rawStatus = lines.Select(line =>
     (half[0], half[1].Split(',').Select(int.Parse).Reverse().ToArray())).ToArray();
 // Then enumerate the strings with unknowns (wildcards)
 // into bitfields representing both possibilities for every unknown
-// 8 unknowns -> 256 bitfields
-(int[], int[])[] enumeratedStatus = wildStatus.Select(half =>
-    (EnumerateUnknowns(half.Item1), half.Item2)).ToArray();
 
+// *** Part 1 ***
+// *** Part 1 ***
+// *** Part 1 ***
+
+// 8 unknowns -> 256 bitfields
+// Concrete type would be (int[], int[])[]
+var enumeratedStatus = wildStatus.Select(half =>
+    (EnumerateUnknowns(half.Item1), half.Item2));
+
+// Now count ONLY valid possibilities and sum the counts
 int ansPart1 = enumeratedStatus.Select(data =>
     data.Item1.Where(maybe => IsValid(maybe, data.Item2)).Count()).Sum();
 
-foreach (var line in lines)
-{
-    Console.WriteLine(line);
-}
-
-int ansPart2 = 0;
+if (ansPart1 > 1000)
+    Debug.Assert(ansPart1 == 8193);
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
-Console.WriteLine($"The answer for Part {2} is {ansPart2}");
+
+// *** Part 2 ***
+// *** Part 2 ***
+// *** Part 2 ***
+
+// Because the scale is exponentially larger by 5x bits, the worst case
+// is ~100bits of binary possibilities!  This is too big.
+// So we need to validate AS we're enumerating.  So we only enumerate valid choices.
+// This will keep the memory size and calculation size and variable size manageable.
+// Kinda wish our solution didn't use "bits" now.  Combining strings is easy.
+// bit lengths are arbitrary, too.  Another problem.  :(
+
+//long ansPart2 = wildStatus.Select(half =>
+//    EnumerateValidateCountUnknowns(half.Item1, half.Item2)).sum();
+
+//Console.WriteLine($"The answer for Part {2} is {ansPart2}");
 
 Console.ReadKey();
 

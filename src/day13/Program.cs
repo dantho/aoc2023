@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
-int aocPart = 1;
+int aocPart = 2;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day13.txt");
 
 //// Example 1 input
@@ -60,13 +60,17 @@ foreach (List<string> pattern in patterns)
         if (!rowSearch)
             patternAsArray = transpose(patternAsArray);
 
-        int? foldRow = findFold(patternAsArray);
+        int? foldRow = aocPart == 1 ?
+             findFold(patternAsArray) :
+             findFold2(patternAsArray);
         if (foldRow is null)
         {
             patternAsArray = patternAsArray.Reverse().ToArray();
-            int? rowInvertedFoldRow = findFold(patternAsArray);
+            int? rowInvertedFoldRow = aocPart == 1 ?
+                 findFold(patternAsArray) :
+                 findFold2(patternAsArray);
             if (rowInvertedFoldRow is not null)
-                // Ndx starts at zero on BOTH sides of this !calculation!  Thus, the -2.
+                // Ndx starts at zero on BOTH sides of this calculation.  Thus, the -2.
                 foldRow = patternAsArray.Length - rowInvertedFoldRow - 2;
         }
         if (foldRow is not null)
@@ -85,22 +89,30 @@ foreach (List<string> pattern in patterns)
 }
 Debug.Assert(foldscore.Count == patterns.Count);
 
-foreach (var line in lines)
-{
-    Console.WriteLine(line);
-}
+int ans = foldscore.Sum();
 
-int ansPart1 = foldscore.Sum();
-int ansPart2 = 0;
-
-Console.WriteLine($"The answer for Part {1} is {ansPart1}");
-Console.WriteLine($"The answer for Part {2} is {ansPart2}");
+Console.WriteLine($"The answer for Part {aocPart} is {ans}");
 
 Console.ReadKey();
 
 // End
 // End
 // End
+
+bool singleCharDiff(string s1, string s2)
+{
+    Debug.Assert(s1.Length == s2.Length);
+    bool diffFound = false;
+    for (int ndx = 0; ndx < s1.Length; ndx++)
+    {
+        if (s1[ndx] != s2[ndx])
+        {
+            if (diffFound) return false; // 2nd diff found!
+            diffFound = true;
+        }
+    }
+    return diffFound;
+}
 
 string[] transpose(string[] input)
 {
@@ -120,20 +132,50 @@ string[] transpose(string[] input)
 int? findFold(string[] pattern)
 {
     int lastOddNdx = pattern.Length - 1 - (pattern.Length % 2);
-    for (int row = lastOddNdx; row > 0 ; row -= 2)
+    for (int row = lastOddNdx; row > 0; row -= 2)
     {
-        bool foundFold = true; // optimistic default
-        // Test for reflective match to from 0 to row
+        bool foldFound = true; // optimistic default
+        // Test for reflective match from 0 to row
         for (int bottom = 0; bottom <= row / 2; bottom++)
         {
             if (pattern[bottom] != pattern[row - bottom])
             {
-                foundFold = false;
+                foldFound = false;
                 break;
             }
         }
         // Fold found?
-        if (foundFold) return row / 2;
+        if (foldFound) return row / 2;
+    }
+    // No fold found
+    return null;
+}
+int? findFold2(string[] pattern)
+{
+    int lastOddNdx = pattern.Length - 1 - (pattern.Length % 2);
+    for (int row = lastOddNdx; row > 0; row -= 2)
+    {
+        bool foldFound = true; // optimistic default
+        bool singleCharDiffFound = false;
+        // Test for reflective match from 0 to row
+        // With a SINGLE char difference (aka "smudge")
+        // in a single pair
+        for (int bottom = 0; bottom <= row / 2; bottom++)
+        {
+            if (pattern[bottom] != pattern[row - bottom])
+            {
+                if (singleCharDiff(pattern[bottom], pattern[row-bottom])
+                && !singleCharDiffFound)
+                    singleCharDiffFound = true;
+                else
+                {
+                    foldFound = false;
+                    break;
+                }
+            }
+        }
+        // Fold found?
+        if (foldFound & singleCharDiffFound) return row / 2;
     }
     // No fold found
     return null;

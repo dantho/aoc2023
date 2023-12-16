@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using System.ComponentModel.Design;
 using System.Xml.Schema;
+using System.Reflection.Emit;
+using System.Collections;
+using System.Runtime.CompilerServices;
 
 int aocPart = 1;
 string cslToHash = System.IO.File.ReadLines(@"C:\Users\DanTh\github\aoc2023\inputs\day15.txt").First();
@@ -22,10 +25,47 @@ Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 // ************** Part 2 ***************
 // ************** Part 2 ***************
 
+//cslToHash = example;
 
+var boxes = new List<(string, int)>[256];
+for (int b = 0; b < boxes.Length; b++)
+    boxes[b] = new();
 
+foreach (string instruction in cslToHash.Split(','))
+{
+    if (instruction.Last() == '-')
+    {
+        string label = instruction[..^1];
+        int boxNum = label.AocHash();
+        int removeAt = boxes[boxNum].IndexOfItem1(label);
+        if (removeAt >= 0) boxes[boxNum].RemoveAt(removeAt);
+    }
+    else if (char.IsDigit(instruction.Last()))
+    {
+        int digit = int.Parse(instruction[^1].ToString());
+        string label = instruction[..^2];
+        int boxNum = label.AocHash();
+        int replaceAt = boxes[boxNum].IndexOfItem1(label);
+        if (replaceAt >= 0)
+            boxes[boxNum][replaceAt] = (label, digit);
+        else
+            boxes[boxNum].Add((label, digit));
+    }
+    else
+        throw new Exception($"Illegal instruction {instruction}");
+}
 
-int ansPart2 = 0;
+int focusingTotal = 0;
+for (int b=0; b < boxes.Length; b++)
+{
+    int lensPos = 0;
+    foreach ((_,int lens) in boxes[b])
+    {
+        focusingTotal += (b + 1) * lens * ++lensPos;
+    }
+}
+
+int ansPart2 = focusingTotal;
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");
 Console.ReadKey();
 
@@ -66,4 +106,13 @@ public static class MyExtensions
         int ndx = 0;
         return input.Select(item => (ndx++, item));
     }
+    public static int IndexOfItem1<T>(this List<(string, T)> input, string label)
+    {
+        for (int ndx = 0; ndx < input.Count; ndx++)
+        {
+            if (input[ndx].Item1 == label) return ndx;
+        }
+        return -1;
+    }
+
 }

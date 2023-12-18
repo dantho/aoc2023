@@ -22,8 +22,8 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [14: Parabolic Reflector Dish](https://adventofcode.com/2023/day/14) |⭐⭐| Rock tumbling!  And a memoization thing in Part 2 to avoid **4 BILLION** tumbles.  It was modulo 19... |
 | [15: Lens Library](https://adventofcode.com/2023/day/15) |⭐⭐| Hash of strings. Part 1 easy. Part 2 meh. |
 | [16: The Floor Will Be Lava](https://adventofcode.com/2023/day/16) |⭐⭐| (Not Yet Available) |
-| [17: Clumsy Crucible](https://adventofcode.com/2023/day/17) || Weighted pathfinding |
-| [18: ](https://adventofcode.com/2023/day/18) || (Not Yet Available) |
+| [17: Clumsy Crucible](https://adventofcode.com/2023/day/17) |⭐| Weighted pathfinding with path constraints.  Grrr! |
+| [18: Lavaduct Lagoon](https://adventofcode.com/2023/day/18) || (Not Yet Available) |
 | [19: ](https://adventofcode.com/2023/day/19) || (Not Yet Available) |
 | [20: ](https://adventofcode.com/2023/day/20) || (Not Yet Available) |
 | [21: ](https://adventofcode.com/2023/day/21) || (Not Yet Available) |

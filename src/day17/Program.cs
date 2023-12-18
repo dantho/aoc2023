@@ -12,32 +12,32 @@ using System.IO;
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day17.txt");
 
-// Example 1 input
-lines = new string[]
-{
-    "2413432311323",
-    "3215453535623",
-    "3255245654254",
-    "3446585845452",
-    "4546657867536",
-    "1438598798454",
-    "4457876987766",
-    "3637877979653",
-    "4654967986887",
-    "4564679986453",
-    "1224686865563",
-    "2546548887735",
-    "4322674655533",
-};
-// Example 2 input
-lines = new string[]
-{
-    "111111111111",
-    "999999999991",
-    "999999999991",
-    "999999999991",
-    "999999999991",
-};
+//// Example 1 input
+//lines = new string[]
+//{
+//    "2413432311323",
+//    "3215453535623",
+//    "3255245654254",
+//    "3446585845452",
+//    "4546657867536",
+//    "1438598798454",
+//    "4457876987766",
+//    "3637877979653",
+//    "4654967986887",
+//    "4564679986453",
+//    "1224686865563",
+//    "2546548887735",
+//    "4322674655533",
+//};
+//// Example 2 input
+//lines = new string[]
+//{
+//    "111111111111",
+//    "999999999991",
+//    "999999999991",
+//    "999999999991",
+//    "999999999991",
+//};
 
 Map map = new Map(lines);
 int maxX = map.MaxX;
@@ -68,40 +68,41 @@ pathsToExplore.Push(new(new(0, 1), Dir.S, 0, 1));
 // 
 // Final minHeatLoss for bottom right position is absolute min of all paths
 
-while (pathsToExplore.Count > 0)
-{
-    PathExplorer path = pathsToExplore.Pop();
-    path.CummulativeHeatLoss += map.Grid[path.Pos.X, path.Pos.Y];
-    int prelimMinHeatLoss = Math.Min(minHeatloss[maxInaRow-1,(int)Dir.S].Grid[maxX, maxY],minHeatloss[maxInaRow-1,(int)Dir.E].Grid[maxX, maxY]);
-    if (path.CummulativeHeatLoss >= prelimMinHeatLoss)
-        // Don't bother, dude.
-        continue;
-    if (path.CummulativeHeatLoss < minHeatloss[path.FacingStepsInaRow - 1, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
-    {
-        // We're the best!  (...so far.)
-        for (int j = path.FacingStepsInaRow - 1; j < 3; j++)
-            if (path.CummulativeHeatLoss < minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
-                minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y] = path.CummulativeHeatLoss;
-    }
-    else
-        // Someone faster/better has been here (...it might have been us!)
-        continue;
-    if (path.Pos.X == maxX && path.Pos.Y == maxY)
-    {
-        Console.WriteLine($"Reached end with {path.CummulativeHeatLoss} Heat lost. {pathsToExplore.Count} more paths to explore.");
-        // We're done! (...with this path)
-        continue;
-    }
-    List<PathExplorer> maybePaths = path.NextSteps();
-    foreach (PathExplorer p in maybePaths)
-        pathsToExplore.Push(p);
-}
+//while (pathsToExplore.Count > 0)
+//{
+//    PathExplorer path = pathsToExplore.Pop();
+//    path.CummulativeHeatLoss += map.Grid[path.Pos.X, path.Pos.Y];
+//    int prelimMinHeatLoss = Math.Min(minHeatloss[maxInaRow-1,(int)Dir.S].Grid[maxX, maxY],minHeatloss[maxInaRow-1,(int)Dir.E].Grid[maxX, maxY]);
+//    if (path.CummulativeHeatLoss >= prelimMinHeatLoss)
+//        // Don't bother, dude.
+//        continue;
+//    if (path.CummulativeHeatLoss < minHeatloss[path.FacingStepsInaRow - 1, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
+//    {
+//        // We're the best!  (...so far.)
+//        for (int j = path.FacingStepsInaRow - 1; j < 3; j++)
+//            if (path.CummulativeHeatLoss < minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
+//                minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y] = path.CummulativeHeatLoss;
+//    }
+//    else
+//        // Someone faster/better has been here (...it might have been us!)
+//        continue;
+//    if (path.Pos.X == maxX && path.Pos.Y == maxY)
+//    {
+//        Console.WriteLine($"Reached end with {path.CummulativeHeatLoss} Heat lost. {pathsToExplore.Count} more paths to explore.");
+//        // We're done! (...with this path)
+//        continue;
+//    }
+//    List<PathExplorer> maybePaths = path.NextSteps();
+//    foreach (PathExplorer p in maybePaths)
+//        pathsToExplore.Push(p);
+//}
 
-foreach (var line in lines)
-{
-    Console.WriteLine(line);
-}
-int ansPart1 = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
+//foreach (var line in lines)
+//{
+//    Console.WriteLine(line);
+//}
+//int ansPart1 = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
+int ansPart1 = 0;
 
 // Part 2
 
@@ -126,7 +127,9 @@ while (pathsToExplore.Count > 0)
     debugCount++;
     PathExplorer path = pathsToExplore.Pop();
     path.CummulativeHeatLoss += map.Grid[path.Pos.X, path.Pos.Y];
-    int prelimMinHeatLoss = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[maxX, maxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[maxX, maxY]);
+    int prelimMinHeatLoss = Math.Min(
+        minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[maxX, maxY], 
+        minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[maxX, maxY]);
     if (path.CummulativeHeatLoss >= prelimMinHeatLoss)
         // Don't bother, dude.
         continue;
@@ -134,10 +137,10 @@ while (pathsToExplore.Count > 0)
         // Someone faster/better has been here (...it might have been us!)
         continue;
     // We're the best!  (...so far.)
-    for (int j = path.FacingStepsInaRow - 1; j < maxInaRow - 1; j++)
+    for (int j = path.FacingStepsInaRow - 1; j < maxInaRow; j++)
         if (path.CummulativeHeatLoss < minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
             minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y] = path.CummulativeHeatLoss;
-    if (debugCount % 10000 < 300) Console.WriteLine($"At ({path.Pos}) with Heat Loss {path.CummulativeHeatLoss}");
+    // if ((debugCount % 10000) < 300) Console.WriteLine($"At ({path.Pos}) with Heat Loss {path.CummulativeHeatLoss}");
     if (path.Pos.X == maxX && path.Pos.Y == maxY && path.FacingStepsInaRow >= minInaRow)
     {
         Console.WriteLine($"Reached end with {path.CummulativeHeatLoss} Heat lost. {pathsToExplore.Count} more paths to explore.");
@@ -148,7 +151,10 @@ while (pathsToExplore.Count > 0)
     foreach (PathExplorer p in maybePaths)
         pathsToExplore.Push(p);
 }
-int ansPart2 = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
+int ansPart2 = Math.Min(
+    minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY],
+    minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
+Debug.Assert(ansPart2 < 1415);
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");
@@ -207,7 +213,7 @@ class PathExplorer
                 }
                 else
                 {
-                    if (FacingStepsInaRow > MinStepsInTheSameDir)
+                    if (FacingStepsInaRow >= MinStepsInTheSameDir)
                         validPaths.Add(new PathExplorer(newPos, dir, CummulativeHeatLoss, 1));
                 }
         }

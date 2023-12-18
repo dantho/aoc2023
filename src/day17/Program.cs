@@ -12,30 +12,40 @@ using System.IO;
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day17.txt");
 
-//// Example 1 input
-//lines = new string[]
-//{
-//    "2413432311323",
-//    "3215453535623",
-//    "3255245654254",
-//    "3446585845452",
-//    "4546657867536",
-//    "1438598798454",
-//    "4457876987766",
-//    "3637877979653",
-//    "4654967986887",
-//    "4564679986453",
-//    "1224686865563",
-//    "2546548887735",
-//    "4322674655533",
-//};
+// Example 1 input
+lines = new string[]
+{
+    "2413432311323",
+    "3215453535623",
+    "3255245654254",
+    "3446585845452",
+    "4546657867536",
+    "1438598798454",
+    "4457876987766",
+    "3637877979653",
+    "4654967986887",
+    "4564679986453",
+    "1224686865563",
+    "2546548887735",
+    "4322674655533",
+};
+// Example 2 input
+lines = new string[]
+{
+    "111111111111",
+    "999999999991",
+    "999999999991",
+    "999999999991",
+    "999999999991",
+};
 
 Map map = new Map(lines);
 int maxX = map.MaxX;
 int maxY = map.MaxY;
-PathExplorer.Init(maxX, maxY);
-Map[,] minHeatloss = new Map[3,4];
-for (int i = 0; i < 3; i++)
+int maxInaRow = 3;
+PathExplorer.Init(maxX, maxY, maxInaRow);
+Map[,] minHeatloss = new Map[maxInaRow,4];
+for (int i = 0; i < maxInaRow; i++)
     for (int j = 0; j < 4; j++)
         minHeatloss[i,j] = new Map(int.MaxValue, maxX, maxY);
 // Starting in upper left (0,0), try walking East or South
@@ -62,7 +72,7 @@ while (pathsToExplore.Count > 0)
 {
     PathExplorer path = pathsToExplore.Pop();
     path.CummulativeHeatLoss += map.Grid[path.Pos.X, path.Pos.Y];
-    int prelimMinHeatLoss = Math.Min(minHeatloss[2,(int)Dir.S].Grid[maxX, maxY],minHeatloss[2,(int)Dir.E].Grid[maxX, maxY]);
+    int prelimMinHeatLoss = Math.Min(minHeatloss[maxInaRow-1,(int)Dir.S].Grid[maxX, maxY],minHeatloss[maxInaRow-1,(int)Dir.E].Grid[maxX, maxY]);
     if (path.CummulativeHeatLoss >= prelimMinHeatLoss)
         // Don't bother, dude.
         continue;
@@ -91,8 +101,54 @@ foreach (var line in lines)
 {
     Console.WriteLine(line);
 }
-int ansPart1 = Math.Min(minHeatloss[2, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[2, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
-int ansPart2 = 0;
+int ansPart1 = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
+
+// Part 2
+
+maxInaRow = 10;
+int minInaRow = 4;
+PathExplorer.Init(maxX, maxY, maxInaRow, minInaRow);
+minHeatloss = new Map[maxInaRow, 4];
+for (int i = 0; i < maxInaRow; i++)
+    for (int j = 0; j < 4; j++)
+        minHeatloss[i, j] = new Map(int.MaxValue, maxX, maxY);
+// Starting in upper left (0,0), try walking East or South
+// On every step, walk in every possible direction that results in lower heatloss
+pathsToExplore = new();
+pathsToExplore.Push(new(new(1, 0), Dir.E, 0, 1));
+pathsToExplore.Push(new(new(0, 1), Dir.S, 0, 1));
+
+// Algo: Pretty much same as above
+
+int debugCount = 0;
+while (pathsToExplore.Count > 0)
+{
+    debugCount++;
+    PathExplorer path = pathsToExplore.Pop();
+    path.CummulativeHeatLoss += map.Grid[path.Pos.X, path.Pos.Y];
+    int prelimMinHeatLoss = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[maxX, maxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[maxX, maxY]);
+    if (path.CummulativeHeatLoss >= prelimMinHeatLoss)
+        // Don't bother, dude.
+        continue;
+    if (path.CummulativeHeatLoss >= minHeatloss[path.FacingStepsInaRow - 1, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
+        // Someone faster/better has been here (...it might have been us!)
+        continue;
+    // We're the best!  (...so far.)
+    for (int j = path.FacingStepsInaRow - 1; j < maxInaRow - 1; j++)
+        if (path.CummulativeHeatLoss < minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y])
+            minHeatloss[j, (int)path.Facing].Grid[path.Pos.X, path.Pos.Y] = path.CummulativeHeatLoss;
+    if (debugCount % 10000 < 300) Console.WriteLine($"At ({path.Pos}) with Heat Loss {path.CummulativeHeatLoss}");
+    if (path.Pos.X == maxX && path.Pos.Y == maxY && path.FacingStepsInaRow >= minInaRow)
+    {
+        Console.WriteLine($"Reached end with {path.CummulativeHeatLoss} Heat lost. {pathsToExplore.Count} more paths to explore.");
+        // We're done! (...with this path)
+        continue;
+    }
+    List<PathExplorer> maybePaths = path.NextSteps();
+    foreach (PathExplorer p in maybePaths)
+        pathsToExplore.Push(p);
+}
+int ansPart2 = Math.Min(minHeatloss[maxInaRow - 1, (int)Dir.S].Grid[map.MaxX, map.MaxY], minHeatloss[maxInaRow - 1, (int)Dir.E].Grid[map.MaxX, map.MaxY]);
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");
@@ -107,8 +163,9 @@ class PathExplorer
 {
     public static int MaxX { get; set; }
     public static int MaxY { get; set; }
+    public static int MaxStepsInTheSameDir;
+    public static int MinStepsInTheSameDir;
 
-    const int MaxStepsInTheSameDir = 3;
     readonly Dir[] NESW = { Dir.N, Dir.E, Dir.S, Dir.W };
 
     public Position Pos;
@@ -116,10 +173,12 @@ class PathExplorer
     public int FacingStepsInaRow;
     public int CummulativeHeatLoss;
 
-    public static void Init(int maxX, int maxY)
+    public static void Init(int maxX, int maxY, int maxInaRow, int minInaRow = 0)
     {
         MaxX = maxX;
         MaxY = maxY;
+        MaxStepsInTheSameDir = maxInaRow;
+        MinStepsInTheSameDir = minInaRow;
     }
     public PathExplorer(Position pos, Dir facing, int cummulativeHeatLossSoFar) :
         this(pos, facing, cummulativeHeatLossSoFar, 1) { }
@@ -148,7 +207,8 @@ class PathExplorer
                 }
                 else
                 {
-                    validPaths.Add(new PathExplorer(newPos, dir, CummulativeHeatLoss, 1));
+                    if (FacingStepsInaRow > MinStepsInTheSameDir)
+                        validPaths.Add(new PathExplorer(newPos, dir, CummulativeHeatLoss, 1));
                 }
         }
         return validPaths;
@@ -202,8 +262,8 @@ class Map
     public readonly int[,] Grid;
     public Map(string[] lines)
     {
-        MaxY = lines.Length - 1;
         MaxX = lines[0].Length - 1;
+        MaxY = lines.Length - 1;
         Grid = new int[MaxX + 1, MaxY + 1];
         for (int y = 0; y <= MaxY; y++)
         {
@@ -214,8 +274,8 @@ class Map
     }
     public Map(int initialize, int maxX, int maxY)
     {
-        MaxY = maxX;
-        MaxX = maxY;
+        MaxX = maxX;
+        MaxY = maxY;
         Grid = new int[MaxX + 1, MaxY + 1];
         for (int y = 0; y <= MaxY; y++)
         {

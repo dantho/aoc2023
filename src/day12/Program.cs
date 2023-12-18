@@ -10,16 +10,16 @@ using System.Runtime.CompilerServices;
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day12.txt");
 
-// Example input
-lines = new string[]
-{
-    "???.### 1,1,3",
-    ".??..??...?##. 1,1,3",
-    "?#?#?#?#?#?#?#? 1,3,1,6",
-    "????.#...#... 4,1,1",
-    "????.######..#####. 1,6,5",
-    "?###???????? 3,2,1"
-};
+//// Example input
+//lines = new string[]
+//{
+//    "???.### 1,1,3",
+//    ".??..??...?##. 1,1,3",
+//    "?#?#?#?#?#?#?#? 1,3,1,6",
+//    "????.#...#... 4,1,1",
+//    "????.######..#####. 1,6,5",
+//    "?###???????? 3,2,1"
+//};
 
 // Extract into 2 strings
 string[][] rawStatus = lines.Select(line =>
@@ -31,17 +31,16 @@ string[][] rawStatus = lines.Select(line =>
 // with remainder of string and remainder of ints
 
 int ansPart1 = 0;
-foreach ((string wildcardSprings, int[] validationRecords) in wildStatus)
+foreach ((string springsWithWildcards, int[] validationRecords) in wildStatus)
 {
     var validRecords = validationRecords.ToList();
-    string wildcardSpringsReversed = new string(wildcardSprings.Reverse().ToArray());
-    ansPart1 += PossibleValidArrangementCount(wildcardSpringsReversed, validRecords);
+    string reversedSpringsWithWild = new string(springsWithWildcards.Reverse().ToArray());
+    ansPart1 += PossibleValidArrangementCount(reversedSpringsWithWild, validRecords);
 }
 
-if (ansPart1 > 1000)
-    Debug.Assert(ansPart1 == 8193);
-
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
+
+if (ansPart1 > 1000) Debug.Assert(ansPart1 == 8193);
 
 // *** Part 2 ***
 // *** Part 2 ***
@@ -90,6 +89,9 @@ int PossibleValidArrangementCount(string springs, List<int> validationData)
         return validationData.Count == 0 ? 1 : 0;
     }
 
+    // Copy data so we don't mess up calling func
+    validationData = validationData.Select(x => x).ToList();
+
     // Grab the validation-record we're working with on this iteration
     int vRecord = validationData[0];
 
@@ -136,7 +138,7 @@ int PossibleValidArrangementCount(string springs, List<int> validationData)
         maxNdx = firstSpring + vRecord - 1;
 
     if (maxNdx - minNdx + 1 < vRecord)
-        return 0; // Invalid
+        return 0; // This might never be used -- the check is insurance
 
     // Find all known springs in this region, we'll use these locations to reject adjacencies.
     // Overlap of a spring is OK, but adjacencies will EXTEND
@@ -145,10 +147,10 @@ int PossibleValidArrangementCount(string springs, List<int> validationData)
     List<int> springNdxes = region.IndicesOf('#');
 
     // FINALLY, we can slide our vRecord-length candidate through our region
-    // validating candidates don't have against adjacent springs
+    // validating that candidates don't have adjacent springs
     // (right side checking is all that is required, due to left-side anchoring on first spring)
     // then recurse further for each success,
-    // adding the results form each to establish the return value.
+    // adding the results from each to establish the return value.
     // Phew!
     validationData.RemoveAt(0); // We're done processing this vRecord, remove it before we recurse.
     int returnVal = 0;
@@ -157,10 +159,13 @@ int PossibleValidArrangementCount(string springs, List<int> validationData)
         int end = start + vRecord - 1;
         if (end+1==springs.Length || springs[end+1] != '#')
         {
-            returnVal +=
-                end + 1 < springs.Length ?
-                PossibleValidArrangementCount(springs[(end + 1)..], validationData) :
-                PossibleValidArrangementCount("", validationData);
+            if (end + 2 >= springs.Length)
+                returnVal += PossibleValidArrangementCount("", validationData);
+            else
+            {
+                string remainder = springs[(end + 2)..];
+                returnVal += PossibleValidArrangementCount(remainder, validationData);
+            }
         }
     }
     return returnVal;
@@ -178,7 +183,7 @@ public static class MyExtensions
     }
 
     /// <summary>
-    /// This is a quickly written IEnumerable in/out which uses concrete collection
+    /// This is a naively written IEnumerable in/out which uses concrete collection
     /// I'm sure this violates a design rule for an IEnumereable
     /// But I haven't thought through how to do this otherwise.  :(
     /// ToDo: Fix this -- use enumerations-only in this routine.

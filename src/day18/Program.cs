@@ -7,8 +7,12 @@ using System.ComponentModel.Design;
 using System.Xml.Schema;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.Linq;
 
-int aocPart = 1;
+int aocPart = 2;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day18.txt");
 
 //// Example 1 input
@@ -29,11 +33,6 @@ string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inp
 //    "U 2 (#7a21e3)",
 //};
 
-
-// // Example 2 input
-// lines = new string[] {
-//     "bla bla ...",
-//     };
 List<Instruction> instructions = new();
 foreach (var line in lines)
 {
@@ -41,11 +40,15 @@ foreach (var line in lines)
     char relChar = split[0][0];
     int steps = int.Parse(split[1]);
     string color = split[2][2..^1];
-    instructions.Add(new(relChar,steps,color));
+    instructions.Add(new(relChar, steps, color));
 }
 
-// Convert relative to absolute, starting at (0,0) absolute
-Point current = new(0,0);
+if (aocPart == 2)
+    instructions = instructions.Select(i => i.ToPart2()).ToList();
+
+    // Convert relative to absolute, starting at (0,0) absolute
+    // And calculating each corner
+    Point current = new(0,0);
 List<Point> nodes = new() { current };
 
 foreach (Instruction instr in instructions)
@@ -92,7 +95,6 @@ Console.WriteLine(
     $"Grid spans x from {minX} to {maxX}, y from {minY} to {maxY}. "
   + $"Size is {maxX + 1} x {maxY + 1}");
 
-
 // Need smart algo:
 // For each rectangle defined by a pair of sides and either the left or right edge of the map,
 // depending on direction of vertical side formation, find overlap of each rectangle with any
@@ -103,76 +105,142 @@ Console.WriteLine(
 // "Outside area will have an odd overlap.
 
 // Rectangle definition is subtle -- edge-inclusive or not depends on rectangles above/below.
-// Process the vertices to be non-overlapping before we do the rectangles formation.
+// Do initial rectangles formation with overlapping edges, then post process?
 // Overlapping horizontal edges are "retained" by the rectangle with the longer edge.
 // The shorter-edged rectangle becomes vertically shorter by 1.  (Or two.)
 
-// Create blank map of sufficient size
-char[,] map = new char[maxX + 1, maxY + 1];
-for (int x = 0; x <= maxX; x++)
-    for (int y = 0; y <= maxY; y++)
-        map[x, y] = '.';
-
-// Now "Draw" outline on map
-// One segment at a time
-List<Point> nodes2 = nodes.Skip(1).ToList();
-foreach ((Point, Point) segmentEndpoints in nodes.Zip(nodes2))
+// Collect endpoint pairs for every vertical border segment (inclusive on both ends)
+int verticalSelectorOddEven = nodes[0].X == nodes[1].X ? 0 : 1;
+var pairs = nodes.Zip(nodes.Skip(1)).Where((_, i) => i % 2 == verticalSelectorOddEven);
+foreach ((Point,Point) pair in pairs)
 {
-    var (p1, p2) = segmentEndpoints;
-    bool isPosX = p2.X >= p1.X;
-    bool isPosY = p2.Y >= p1.Y;
-    for (int x = p1.X; isPosX ? x <= p2.X : x >= p2.X; x += isPosX ? 1 : -1)
-        for (int y = p1.Y; isPosY ? y <= p2.Y : y >= p2.Y; y += isPosY ? 1 : -1)
-            map[x, y] = '#';
+    Debug.Assert(pair.Item1.X == pair.Item2.X);
 }
+var vSegments = pairs.Select(pair => (pair.Item1.X, pair.Item1.Y, pair.Item2.Y));
 
-// Create printable map
-StringBuilder sb = new();
-List<string> mapStrings = new();
-for (int y = minY; y <= maxY; y++)
+int? priorSecondItem2 = null;
+
+// Circular nature of segments requires extras added (and ultimately removed)
+vSegments = vSegments.Concat(vSegments.Take(2)).ToList();
+var vSegsmentsShifted = vSegments.Skip(1);
+// Eliminate endpoint overlap by eliminating the overlap on the "shorter" rectangle
+// Also create new data format while we're at it
+List<(bool IsDown, int X, int Y0, int Y1)> nonOverlapping = vSegments.Zip(vSegsmentsShifted).Select(pair =>
 {
-    for (int x = 0; x <= maxX; x++)
-        sb.Append(map[x, y]);
-    mapStrings.Add(sb.ToString());
-    sb.Clear();
-}
-
-// Fill inside (by guessing that center pos is inside)
-Queue<Point> spots2search = new();
-spots2search.Enqueue(new Point(maxX / 2, maxY / 2));
-Debug.Assert(map[spots2search.Peek().X, spots2search.Peek().Y] != '#');
-
-while (spots2search.Count > 0)
-{
-    Point s = spots2search.Dequeue();
-    if (map[s.X, s.Y] == '#') continue;
-    map[s.X, s.Y] = '#';
-    foreach (var delta in new (int, int)[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
+    Debug.Assert(pair.First.Item3 == pair.Second.Item2);
+    if (priorSecondItem2 is not null)
+        pair.First.Item2 = (int)priorSecondItem2;
+    bool isValid = true;
+    bool isDown = pair.First.Item3 > pair.First.Item2;
+    bool secondIsDown = pair.Second.Item3 > pair.Second.Item2;
+    if (secondIsDown == isDown)
     {
-        int x = s.X + delta.Item1;
-        int y = s.Y + delta.Item2;
-        if (x < 0 || x > maxX || y < 0 || y > maxY) continue;
-        spots2search.Enqueue(new Point(x, y));
+        if (isDown)
+        {
+            if (pair.First.X > pair.Second.X) // Larger X wins going down with clockwise rotation
+                pair.Second.Item2 += 1; // down one
+            else
+                pair.First.Item3 -= 1; // up one
+            // Check and flag rare complete elimination of first segment
+            isValid &= !(pair.First.Item2 > pair.First.Item3);
+        }
+        else // moving up
+        {
+            if (pair.First.X < pair.Second.X) // Smaller X wins going up with clockwise rotation
+                pair.Second.Item2 -= 1; // up one
+            else
+                pair.First.Item3 += 1; // down one
+            // Check and flag rare complete elimination of first segment
+            isValid &= !(pair.First.Item2 < pair.First.Item3);
+        }
+        priorSecondItem2 = pair.Second.Item2;
     }
+    else
+    {
+        priorSecondItem2 = null;
+    }
+    return (isValid, firstIsDown:isDown, pair.First);
+}).Skip(1).Where(tup => tup.isValid).Select(tup => (tup.firstIsDown, tup.First.X, tup.First.Item2, tup.First.Item3)).ToList();
+// Reverse Y0/Y1 when !isDown, such that Y0 is always smaller
+nonOverlapping = nonOverlapping.Select(tup =>
+    tup.IsDown ? tup :
+    (tup.IsDown, tup.X, tup.Y1, tup.Y0)
+    ).ToList();
 
-}
+// Now break up all vertical segments into pieces such that any overlap is complete or zero
+// So (x0,0,4) and (x1,2,5) break into (x0,0,1) (x0,2,4) and (x1,2,4) (x1,5,5)
+var lowYs = nonOverlapping.Select(tup => tup.Y0).ToList();
 
-// Create printable map
-sb.Clear();
-mapStrings = new();
-for (int y = minY; y <= maxY; y++)
+List<(bool IsDown, int X, int Y0, int Y1)> segs = new();
+foreach (var seg in nonOverlapping)
 {
-    for (int x = 0; x <= maxX; x++)
-        sb.Append(map[x, y]);
-    mapStrings.Add(sb.ToString());
-    sb.Clear();
+    var myLowSideBreaks = lowYs.Where(lo => lo > seg.Y0 && lo <= seg.Y1).ToList();
+    myLowSideBreaks.Sort();
+    int pos = seg.Y0;
+    foreach (int newBreak in myLowSideBreaks)
+    {
+        segs.Add((seg.IsDown, seg.X, pos, newBreak - 1));
+        pos = newBreak;
+    }
+    // Finish with final (or only/whole) segment:
+    segs.Add((seg.IsDown, seg.X, pos, seg.Y1));
 }
 
-foreach (var row in mapStrings)
-    Console.WriteLine(row);
+nonOverlapping = segs;
+segs = new();
+var highYs = nonOverlapping.Select(tup => tup.Y1).ToList();
+
+foreach (var seg in nonOverlapping)
+{
+    var myHighSideBreaks = highYs.Where(lo => lo >= seg.Y0 && lo < seg.Y1).ToList();
+    myHighSideBreaks.Sort();
+    int pos = seg.Y0;
+    foreach (int newBreak in myHighSideBreaks)
+    {
+        segs.Add((seg.IsDown, seg.X, pos, newBreak));
+        pos = newBreak+1;
+    }
+    // Finish with final (or only/whole) segment:
+    segs.Add((seg.IsDown, seg.X, pos, seg.Y1));
+}
+
+nonOverlapping = segs;
 
 
-int ansPart1 = mapStrings.Select(s => s.Where(c => c == '#').Count()).Sum();
+// Now vertical segments all overlap FULLY (both endpoints match) with 1 or more others, in up/down pairs.
+// When sets are sorted by X, they should alternate up/down/up/down.  (Or down/up/down/up if counter-clockwise.)
+// Filled area is between up/down pairs, inclusive of both endpoints.
+
+// Reorder the tuple so a default sort will do what I want
+// Because I don't know how to change the default sort
+var newTuple = nonOverlapping.Select(tup => (tup.Y0, tup.Y1, tup.X, tup.IsDown)).ToList();
+newTuple.Sort();
+
+int ansPart1 = 0;
+
+for (int i = 0; i < newTuple.Count-1; i+=2)
+{
+    var tup1 = newTuple[i];
+    var tup2 = newTuple[i + 1];
+    //Debug.Assert(tup1.IsDown != tup2.IsDown);
+    //Debug.Assert(tup1.X < tup2.X);
+    Debug.Assert(tup1.Y0 == tup2.Y0);
+    Debug.Assert(tup1.Y1 == tup2.Y1);
+    ansPart1 += (tup1.Y1 - tup1.Y0 + 1) * (tup2.X - tup1.X + 1);
+}
+
+//// Create blank map of sufficient size
+//char[,] map = new char[maxX + 1, maxY + 1];
+//for (int x = 0; x <= maxX; x++)
+//    for (int y = 0; y <= maxY; y++)
+//        map[x, y] = '.';
+//// print map
+//string printable = PrintableMap(map);
+//Console.WriteLine(printable);
+
+if (ansPart1 > 1000)
+    Debug.Assert(ansPart1 == 67891);
+
 int ansPart2 = 0;
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
@@ -183,6 +251,18 @@ Console.ReadKey();
 // End
 // End
 // End
+
+string PrintableMap(char[,] map)
+{
+    StringBuilder sb = new();
+    for (int y = minY; y <= maxY; y++)
+    {
+        for (int x = 0; x <= maxX; x++)
+            sb.Append(map[x, y]);
+        sb.AppendLine();
+    }
+    return sb.ToString();
+}
 
 public class Map
 {
@@ -227,6 +307,63 @@ public enum RelDir {
 
 public static class MyExtensions
 {
+    public static int Hex2Dec(this string hex)
+    {
+        int value = 0;
+        foreach (char c in hex)
+        {
+            value *= 16;
+            switch (char.ToUpper(c))
+            {
+                case 'F':
+                    value += 15;
+                    break;
+                case 'E':
+                    value += 15;
+                    break;
+                case 'D':
+                    value += 15;
+                    break;
+                case 'C':
+                    value += 15;
+                    break;
+                case 'B':
+                    value += 15;
+                    break;
+                case 'A':
+                    value += 15;
+                    break;
+                case >= '0' and <= '9':
+                    value += c - '0';
+                    break;
+                default:
+                    throw new Exception($"Illegal Hex char '{c}'");
+            }
+        }
+        return value;
+    }
+    public static Instruction ToPart2(this Instruction instr)
+    {
+        switch (char.ToUpper(instr.Color[5]))
+        {
+            case '0':
+                instr.RelDir = RelDir.Right;
+                break;
+            case '1':
+                instr.RelDir = RelDir.Down;
+                break;
+            case '2':
+                instr.RelDir = RelDir.Left;
+                break;
+            case '3':
+                instr.RelDir = RelDir.Up;
+                break;
+            default:
+                throw new Exception($"Illegal color final char {instr.Color[5]}");
+        }
+        instr.Steps = instr.Color.Substring(0, 5).Hex2Dec();
+        return instr;
+    }
     public static Point Move(this Point p, RelDir relDir, int steps)
     {
         switch (relDir)

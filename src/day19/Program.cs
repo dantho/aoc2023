@@ -106,12 +106,79 @@ int ansPart1 = inventory.Select(xmasPart => {
     if (state == "R") return 0;
     throw new Exception("State machine failure");
 }).Sum();
+if (ansPart1 > 50000)
+    Debug.Assert(ansPart1 == 446935);
+
+// Part 2 *****************
+
+(long, long)[] xmasRangeInit = { (1, 4000), (1, 4000), (1, 4000), (1, 4000) };
+Queue<(string, (long Low, long High)[])> options = new();
+options.Enqueue(("in", xmasRangeInit));
+long possibilityCount = 0;
+while (options.Count > 0)
+{
+    (string state, (long Low, long High)[] xmasRange) = options.Dequeue();
+
+    while (!(state == "A" || state == "R"))
+    {
+        var rules = stateMachine[state];
+        foreach (var rule in rules)
+        {
+            if (rule.Item1 is null)
+            {
+                state = rule.Item4;
+                break;
+            }
+            if ((bool)rule.Item2)
+            {
+                if (xmasRange[(int)rule.Item1].Low >= rule.Item3) // none
+                    continue; 
+                if (xmasRange[(int)rule.Item1].High < rule.Item3) // all
+                {
+                    state = rule.Item4;
+                    break;
+                }
+                // some
+                (long Low, long High)[] xmasRange2 = ((long Low, long High)[])xmasRange.Clone();
+                xmasRange2[(int)rule.Item1].High = (long)rule.Item3 - 1;
+                options.Enqueue((rule.Item4, xmasRange2));
+                xmasRange[(int)rule.Item1].Low = (long)rule.Item3;
+                continue;
+            }
+            else
+            {
+                if (xmasRange[(int)rule.Item1].High <= rule.Item3) // none
+                    continue; 
+                if (xmasRange[(int)rule.Item1].Low > rule.Item3) // all
+                {
+                    state = rule.Item4;
+                    break;
+                }
+                // some
+                (long Low, long High)[] xmasRange2 = ((long Low, long High)[])xmasRange.Clone();
+                xmasRange2[(int)rule.Item1].Low = (long)rule.Item3 + 1;
+                options.Enqueue((rule.Item4, xmasRange2));
+                xmasRange[(int)rule.Item1].High = (long)rule.Item3;
+                continue;
+            }
+        }
+    }
+    if (state == "A")
+        possibilityCount += 
+            (xmasRange[0].High - xmasRange[0].Low + 1) * 
+            (xmasRange[1].High - xmasRange[1].Low + 1) * 
+            (xmasRange[2].High - xmasRange[2].Low + 1) *
+            (xmasRange[3].High - xmasRange[3].Low + 1);
+    if (state == "R") ;
+    //throw new Exception("State machine failure");
+}
+
 foreach (var line in lines)
 {
     Console.WriteLine(line);
 }
 
-int ansPart2 = 0;
+long ansPart2 = possibilityCount;
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
 Console.WriteLine($"The answer for Part {2} is {ansPart2}");

@@ -1,0 +1,78 @@
+&gq -> rx // Must be low
+
+# gq: // All inputs must be high
+&xj -> gq
+&qs -> gq
+&kz -> gq
+&km -> gq
+
+# xj:
+&mf -> gb, tx, xj, dd, qx, rt, fn
+
+# qs:
+&ph -> nn, xz, tk, ps, qs
+
+# kz:
+&zp -> kj, kz, gx, fv, lv, tp
+
+# km:
+&jn -> km, cr, vz
+
+# mf:
+%sk -> mf
+%vx -> mf, sk
+%jp -> mf, dd
+%bx -> mf, tx
+%rt -> mf, fn
+%rj -> mf, qx
+%bf -> mf, vx
+
+# ph:
+%ls -> ph, cf
+%nh -> ph, ls
+%bj -> ph, nn
+%mg -> ph, ps
+%dp -> ph
+%cf -> ph, nz
+%tk -> ph, mg
+%nz -> ph, dp
+%cm -> ph, bj
+
+# zp:
+%dv -> zp
+%rk -> zp, tp
+%nt -> zp, rk
+%fv -> zp, nt
+%xg -> zp, dv
+%sx -> zp, kj
+%mt -> zp, xg
+%tt -> zp, mt
+
+# jn:
+%sl -> jn
+%xt -> jn, gh
+%br -> jn, fk
+%fk -> jn, gk
+%gk -> jn, xt
+%tl -> jn, br
+%gh -> jn, dj
+%dj -> jn, fj
+%fj -> jn, sl
+%cr -> jn, vz
+%hf -> jn, tl
+
+%xz -> cm
+%ps -> xz
+%fn -> rj
+%tx -> gb
+%kj -> tt
+%qx -> bx
+%lv -> sx
+%gx -> lv
+%tp -> gx
+%dd -> bf
+%gb -> jp
+%vz -> hf
+%nn -> nh
+
+broadcaster -> fv, cr, rt, tk

@@ -11,9 +11,12 @@ using System.Collections;
 
 int aocPart = 1;
 string[] lines = System.IO.File.ReadAllLines(@"C:\Users\DanTh\github\aoc2023\inputs\day21.txt");
-int stepMax = 65;
-// if stepMax == 26501365, with is 202300 * 131 + 65
-
+int stepMax = 65 + 131*3;
+// if stepMax == 26501365, which is 202300 * 131 + 65
+// 65 + 131 * 0 => 3791
+// 65 + 131 * 1 => 33646 (delta: 29,855)
+// 65 + 131 * 2 => 93223 (delta: 59,577)
+// 65 + 131 * 3 => 182522 (delta: 89,299)
 // Example 1 input
 //stepMax = 6;
 //lines = new string[] {
@@ -36,12 +39,18 @@ int stepMax = 65;
 //     };
 
 Map map = new(lines);
-Distances dist = new(map, stepMax);
-int canReachInExactlyNSteps = dist.Reachable.Values.Cast<IEnumerable<int>>()
-    .Where(ienum => ienum.Contains(stepMax)).Count();
 Console.WriteLine(map);
+int prior = 0;
+for (int N = 10; N < 65+131*2+2; N++)
+{
+    Distances dist = new(map, N);
+    int canReachInExactlyNSteps = dist.Reachable.Values.Cast<IEnumerable<int>>()
+        .Where(ienum => ienum.Contains(N)).Count();
+    Console.WriteLine($"{N} Steps {canReachInExactlyNSteps} possibles. Delta is {canReachInExactlyNSteps-prior}");
+    prior = canReachInExactlyNSteps;
+}
 
-int ansPart1 = canReachInExactlyNSteps;
+int ansPart1 = 0;
 int ansPart2 = 0;
 
 Console.WriteLine($"The answer for Part {1} is {ansPart1}");
@@ -89,8 +98,8 @@ public class Distances
             }
             foreach (Point prior in priorPositions)
             {
-                var newPoints = prior.Cardinal(MaxX, MaxY)
-                    .Where(pp => map.Grid[pp.X, pp.Y] == '.');
+                var newPoints = prior.Cardinal()
+                    .Where(pp => map.Grid[pp.X.Modulo(MaxX + 1), pp.Y.Modulo(MaxY + 1)] == '.');
                 foreach (Point p in newPoints)
                 {
                     var set = (HashSet<int>)Reachable[p];
@@ -146,7 +155,11 @@ public class Map
 
 public static class MyExtensions
 {
-    public static List<Point> Cardinal(this Point here,int maxX, int maxY)
+    public static int Modulo(this int input, int mod)
+    {
+        return (input % mod + mod) % mod;
+    }
+    public static List<Point> Cardinal(this Point here, int maxX, int maxY)
     {
         List<Point> cardinal = new();
         if (here.X > 0)
@@ -157,6 +170,15 @@ public static class MyExtensions
             cardinal.Add(new Point(here.X + 1, here.Y));
         if (here.Y < maxY)
             cardinal.Add(new Point(here.X, here.Y + 1));
+        return cardinal;
+    }
+    public static List<Point> Cardinal(this Point here)
+    {
+        List<Point> cardinal = new();
+        cardinal.Add(new Point(here.X - 1, here.Y));
+        cardinal.Add(new Point(here.X, here.Y - 1));
+        cardinal.Add(new Point(here.X + 1, here.Y));
+        cardinal.Add(new Point(here.X, here.Y + 1));
         return cardinal;
     }
 }

@@ -26,7 +26,7 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [18: Lavaduct Lagoon](https://adventofcode.com/2023/day/18) |⭐| Calc area inside arbitrary lagoon given outline |
 | [19: Aplenty](https://adventofcode.com/2023/day/19) |⭐⭐| State Machine |
 | [20: Pulse Propagation](https://adventofcode.com/2023/day/20) || Circuit diagram and simulation |
-| [21: Step Counter](https://adventofcode.com/2023/day/21) || (Not Yet Available) |
+| [21: Step Counter](https://adventofcode.com/2023/day/21) |⭐| Modified Dykstra Part 1. Unknown Part 2 |
 | [22: Sand Slabs](https://adventofcode.com/2023/day/22) || (Not Yet Available) |
 | [23: A Long Walk](https://adventofcode.com/2023/day/23) || (Not Yet Available) |
 | [24: ](https://adventofcode.com/2023/day/24) || (Not Yet Available) |

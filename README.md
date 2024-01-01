@@ -28,6 +28,6 @@ Teradyne private [Leaderboard](https://adventofcode.com/2023/leaderboard/private
 | [20: Pulse Propagation](https://adventofcode.com/2023/day/20) || Circuit diagram and simulation |
 | [21: Step Counter](https://adventofcode.com/2023/day/21) |⭐| Modified Dykstra Part 1. Unknown Part 2 |
 | [22: Sand Slabs](https://adventofcode.com/2023/day/22) |⭐| Tetris Bricks. Part 2 was a Reference Comparison hell! |
-| [23: A Long Walk](https://adventofcode.com/2023/day/23) || (Not Yet Available) |
-| [24: Never Tell Me The Odds](https://adventofcode.com/2023/day/24) || (Not Yet Available) |
+| [23: A Long Walk](https://adventofcode.com/2023/day/23) || Find longest non-overlapping path |
+| [24: Never Tell Me The Odds](https://adventofcode.com/2023/day/24) |⭐| 4D Intersecting lines |
 | [25: Snowverload](https://adventofcode.com/2023/day/25) || (Not Yet Available) |
